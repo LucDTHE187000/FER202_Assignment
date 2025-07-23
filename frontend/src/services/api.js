@@ -167,7 +167,7 @@ class ApiService {
     // Leave Request APIs
     async getAllLeaveRequests() {
         try {
-            return await apiClient.get('/leave-requests');
+            return await apiClient.get('/leave');
         } catch (error) {
             throw error;
         }
@@ -175,18 +175,16 @@ class ApiService {
 
     async getLeaveRequestsByUserId(userId) {
         try {
-            const endpoint = `/leave/user/${userId}`;
-            console.log('Calling endpoint:', endpoint);
-            return await apiClient.get(endpoint);
+            console.log('Calling endpoint:', `/leave/user/${userId}`);
+            return await apiClient.get(`/leave/user/${userId}`);
         } catch (error) {
-            console.error('Error in getLeaveRequestsByUserId:', error);
             throw error;
         }
     }
 
     async getLeaveRequestById(id) {
         try {
-            return await apiClient.get(`/leave-requests/${id}`);
+            return await apiClient.get(`/leave/${id}`);
         } catch (error) {
             throw error;
         }
@@ -202,7 +200,7 @@ class ApiService {
 
     async updateLeaveRequest(id, requestData) {
         try {
-            return await apiClient.put(`/leave-requests/${id}`, requestData);
+            return await apiClient.put(`/leave/${id}`, requestData);
         } catch (error) {
             throw error;
         }
@@ -210,7 +208,7 @@ class ApiService {
 
     async deleteLeaveRequest(id) {
         try {
-            return await apiClient.delete(`/leave-requests/${id}`);
+            return await apiClient.delete(`/leave/${id}`);
         } catch (error) {
             throw error;
         }
@@ -218,7 +216,7 @@ class ApiService {
 
     async getLeaveRequestsByUser(userId) {
         try {
-            return await apiClient.get(`/leave-requests?userId=${userId}`);
+            return await apiClient.get(`/leave/user/${userId}`);
         } catch (error) {
             throw error;
         }
@@ -226,7 +224,7 @@ class ApiService {
 
     async approveLeaveRequest(id, approvedBy) {
         try {
-            return await apiClient.put(`/leave-requests/${id}/approve`, { approvedBy });
+            return await apiClient.put(`/leave/${id}/approve`, { approvedBy });
         } catch (error) {
             throw error;
         }
@@ -234,7 +232,7 @@ class ApiService {
 
     async rejectLeaveRequest(id, rejectedBy) {
         try {
-            return await apiClient.put(`/leave-requests/${id}/reject`, { rejectedBy });
+            return await apiClient.put(`/leave/${id}/reject`, { rejectedBy });
         } catch (error) {
             throw error;
         }

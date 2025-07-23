@@ -36,7 +36,7 @@ class ErrorBoundary extends React.Component {
                         <summary>Chi tiết lỗi (click để xem)</summary>
                         {this.state.error && this.state.error.toString()}
                         <br />
-                        {this.state.errorInfo && this.state.errorInfo.componentStack}
+                        {this.state.errorInfo.componentStack}
                     </details>
                     <button 
                         onClick={() => window.location.reload()}
