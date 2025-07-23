@@ -7,7 +7,7 @@ import Footer from './UI_components/footer/Footer';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
 import Dashboard from './pages/dashboard/Dashboard';
-import LeaveRequest from './pages/create_leave_request/LeaveRquest';
+import LeaveRequest from './pages/create_leave_request/CreateLeaveRequest';
 import './App.css';
 
 function App() {

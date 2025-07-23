@@ -106,7 +106,14 @@ const useLeaveRequest = () => {
             console.error('Error creating leave request:', err);
             
             if (err.response?.data?.error) {
-                setError(err.response.data.error);
+                const errorMsg = err.response.data.error;
+                const errorDetails = err.response.data.details;
+                
+                if (errorDetails) {
+                    setError(`${errorMsg}: ${errorDetails}`);
+                } else {
+                    setError(errorMsg);
+                }
             } else if (err.message) {
                 setError(err.message);
             } else {

@@ -95,6 +95,29 @@ class LeaveRequestController {
                 });
             }
 
+            // Kiểm tra date overlap với các đơn nghỉ phép khác của user
+            console.log('Checking date overlap for user:', parseInt(UserID), 'from:', FromDate, 'to:', ToDate);
+            const overlappingRequests = await this.leaveRequestDB.checkDateOverlap(
+                parseInt(UserID), 
+                new Date(FromDate), 
+                new Date(ToDate)
+            );
+            
+            console.log('Overlapping requests found:', overlappingRequests);
+
+            if (overlappingRequests && overlappingRequests.length > 0) {
+                const overlappingDates = overlappingRequests.map(req => 
+                    `${req.FromDate.toISOString().split('T')[0]} đến ${req.ToDate.toISOString().split('T')[0]}`
+                ).join(', ');
+
+                console.log('Overlap detected, rejecting request');
+                return res.status(400).json({
+                    success: false,
+                    error: 'Khoảng thời gian nghỉ phép bị trùng lặp',
+                    details: `Bạn đã có đơn nghỉ phép trong khoảng thời gian: ${overlappingDates}. Vui lòng chọn khoảng thời gian khác.`
+                });
+            }
+
             const createdLeaveRequest = await this.leaveRequestDB.insert(newLeaveRequest);
 
             res.status(201).json({
@@ -139,6 +162,28 @@ class LeaveRequestController {
             if (ToDate !== undefined) existingLeaveRequest.ToDate = new Date(ToDate);
             if (Reason !== undefined) existingLeaveRequest.Reason = Reason;
             if (StatusID !== undefined) existingLeaveRequest.StatusID = parseInt(StatusID);
+
+            // Kiểm tra date overlap nếu thay đổi ngày nghỉ
+            if (FromDate !== undefined && ToDate !== undefined) {
+                const overlappingRequests = await this.leaveRequestDB.checkDateOverlap(
+                    existingLeaveRequest.UserID,
+                    existingLeaveRequest.FromDate,
+                    existingLeaveRequest.ToDate,
+                    parseInt(id) // Loại trừ request hiện tại
+                );
+
+                if (overlappingRequests && overlappingRequests.length > 0) {
+                    const overlappingDates = overlappingRequests.map(req => 
+                        `${req.FromDate.toISOString().split('T')[0]} đến ${req.ToDate.toISOString().split('T')[0]}`
+                    ).join(', ');
+
+                    return res.status(400).json({
+                        success: false,
+                        error: 'Khoảng thời gian nghỉ phép bị trùng lặp',
+                        details: `Bạn đã có đơn nghỉ phép trong khoảng thời gian: ${overlappingDates}. Vui lòng chọn khoảng thời gian khác.`
+                    });
+                }
+            }
 
             const updatedLeaveRequest = await this.leaveRequestDB.update(existingLeaveRequest);
 

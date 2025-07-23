@@ -254,6 +254,43 @@ class LeaveRequestDBContext extends DBContext {
             throw error;
         }
     }
+
+    // Method để kiểm tra date overlap cho một user
+    async checkDateOverlap(userId, fromDate, toDate, excludeRequestId = null) {
+        try {
+            let query = `
+                SELECT RequestID, FromDate, ToDate
+                FROM LeaveRequest
+                WHERE UserID = @userId
+                AND StatusID IN (1, 3)  -- Chỉ kiểm tra đơn đã duyệt (1) và đang chờ duyệt (3)
+                AND (
+                    (@fromDate <= ToDate AND @toDate >= FromDate)
+                )
+            `;
+            
+            const params = {
+                userId: userId,
+                fromDate: fromDate,
+                toDate: toDate
+            };
+
+            // Loại trừ request hiện tại nếu đang update
+            if (excludeRequestId) {
+                query += ` AND RequestID != @excludeRequestId`;
+                params.excludeRequestId = excludeRequestId;
+            }
+
+            console.log('Executing date overlap query:', query);
+            console.log('With params:', params);
+
+            const result = await this.executeQuery(query, params);
+            console.log('Date overlap query result:', result.recordset);
+            return result.recordset;
+        } catch (error) {
+            console.error('Error checking date overlap:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = LeaveRequestDBContext;
