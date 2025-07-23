@@ -183,7 +183,7 @@ class ApiService {
 
     async createLeaveRequest(requestData) {
         try {
-            return await apiClient.post('/leave-requests', requestData);
+            return await apiClient.post('/leave', requestData);
         } catch (error) {
             throw error;
         }

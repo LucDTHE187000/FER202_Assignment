@@ -65,7 +65,7 @@ class LeaveRequestController {
     // POST /api/leave-requests
     async createLeaveRequest(req, res) {
         try {
-            const { UserID, FromDate, ToDate, Reason } = req.body;
+            const { UserID, FromDate, ToDate, Reason, StatusID } = req.body;
             
             if (!UserID || !FromDate || !ToDate) {
                 return res.status(400).json({
@@ -78,7 +78,11 @@ class LeaveRequestController {
                 UserID: parseInt(UserID),
                 FromDate: new Date(FromDate),
                 ToDate: new Date(ToDate),
-                Reason: Reason || ''
+                Reason: Reason || '',
+                StatusID: StatusID || 3, // Default to Pending status (ID = 3)
+                ApprovedBy: null, // Will be set when approved
+                CreatedAt: new Date(),
+                UpdatedAt: new Date()
             });
 
             // Validate the leave request
