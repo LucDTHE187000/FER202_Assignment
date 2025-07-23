@@ -25,6 +25,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/leave-request-create" element={<LeaveRequest />} />
+                <Route path="/my-leave-request" element={<MyLeaveRequest />} />
                 <Route path="/" element={<Navigate to="/login" replace />} />
               </Routes>
             </main>

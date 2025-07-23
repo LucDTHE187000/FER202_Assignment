@@ -59,6 +59,9 @@ const Navbar = () => {
                             <Link to="/users" className="navbar-item">
                                 Users
                             </Link>
+                            <Link to="/my-leave-request" className="navbar-item">
+                                Đơn Nghỉ Của Tôi
+                            </Link>
                             <div className="navbar-user">
                                 <span className="user-name">
                                     Welcome, {user.FullName || user.Username || 'User'}
