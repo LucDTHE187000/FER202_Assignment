@@ -53,10 +53,17 @@ export const UserProvider = ({ children }) => {
             setLoading(true);
             const response = await apiService.login(credentials);
             
-            if (response && response.success) {
-                const userData = apiService.getCurrentUserFromStorage();
+            if (response && response.success && response.data) {
+                // Lấy user data trực tiếp từ API response thay vì localStorage
+                const userData = response.data.user;
+                console.log('Login API Response User Data:', userData);
+                
                 setUser(userData);
                 setIsAuthenticated(true);
+                
+                // Cập nhật localStorage với dữ liệu mới
+                localStorage.setItem('user', JSON.stringify(userData));
+                
                 return { success: true, user: userData };
             } else {
                 throw new Error('Login failed');

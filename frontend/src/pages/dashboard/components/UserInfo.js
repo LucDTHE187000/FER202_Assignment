@@ -57,10 +57,6 @@ const UserInfo = ({ user, loading = false }) => {
                             <span>{user.Username || 'N/A'}</span>
                         </div>
                         
-                        <div className="info-item">
-                            <label>Email:</label>
-                            <span>{user.Email || 'N/A'}</span>
-                        </div>
                         
                         <div className="info-item">
                             <label>Department:</label>

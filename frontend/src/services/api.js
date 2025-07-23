@@ -173,6 +173,14 @@ class ApiService {
         }
     }
 
+    async getLeaveRequestsByDepartment(departmentId) {
+        try {
+            return await apiClient.get(`/leave/department/${departmentId}`);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getLeaveRequestsByUserId(userId) {
         try {
             console.log('Calling endpoint:', `/leave/user/${userId}`);
@@ -224,7 +232,7 @@ class ApiService {
 
     async approveLeaveRequest(id, approvedBy) {
         try {
-            return await apiClient.put(`/leave/${id}/approve`, { approvedBy });
+            return await apiClient.post(`/leave/${id}/approve`, { approvedBy });
         } catch (error) {
             throw error;
         }
@@ -232,7 +240,7 @@ class ApiService {
 
     async rejectLeaveRequest(id, rejectedBy) {
         try {
-            return await apiClient.put(`/leave/${id}/reject`, { rejectedBy });
+            return await apiClient.post(`/leave/${id}/reject`, { rejectedBy });
         } catch (error) {
             throw error;
         }

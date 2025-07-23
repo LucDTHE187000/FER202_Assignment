@@ -2,33 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import './MyLeaveRequest.css';
 
-const DUMMY_REQUESTS = [
-  {
-    RequestID: 1,
-    FromDate: "2025-07-01",
-    ToDate: "2025-07-03",
-    Reason: "Nghỉ phép cá nhân",
-    StatusID: 1,
-    CreatedAt: "2025-06-25",
-  },
-  {
-    RequestID: 2,
-    FromDate: "2025-08-10",
-    ToDate: "2025-08-12",
-    Reason: "Nghỉ ốm",
-    StatusID: 2,
-    CreatedAt: "2025-08-01",
-  },
-  {
-    RequestID: 3,
-    FromDate: "2025-09-05",
-    ToDate: "2025-09-07",
-    Reason: "Nghỉ phép gia đình",
-    StatusID: 3,
-    CreatedAt: "2025-08-20",
-  },
-];
-
 const statusOptions = [
   { value: 1, label: "Chờ duyệt" },
   { value: 2, label: "Đã duyệt" },
@@ -47,10 +20,8 @@ const MyLeaveRequest = () => {
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      setRequests(DUMMY_REQUESTS);
-      setLoading(false);
-    }, 500);
+    // Thay vì load dữ liệu giả, để trống để hiển thị "không có đơn nào"
+    setLoading(false);
   }, []);
 
   const handleUpdate = (id) => {

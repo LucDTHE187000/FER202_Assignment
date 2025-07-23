@@ -298,6 +298,36 @@ class LeaveRequestController {
         }
     }
 
+    // GET /api/leave-requests/department/:departmentId
+    async getLeaveRequestsByDepartment(req, res) {
+        try {
+            const { departmentId } = req.params;
+
+            if (!departmentId || isNaN(departmentId)) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Invalid department ID'
+                });
+            }
+
+            const leaveRequests = await this.leaveRequestDB.getByDepartmentId(parseInt(departmentId));
+            const leaveRequestJsons = leaveRequests.map(lr => lr.toJSON());
+
+            res.json({
+                success: true,
+                data: leaveRequestJsons,
+                count: leaveRequestJsons.length
+            });
+        } catch (error) {
+            console.error('Error in getLeaveRequestsByDepartment:', error);
+            res.status(500).json({
+                success: false,
+                error: 'Failed to fetch leave requests by department',
+                message: error.message
+            });
+        }
+    }
+
     // PUT /api/leave-requests/:id/approve
     async approveLeaveRequest(req, res) {
         try {

@@ -11,18 +11,32 @@ class LeaveRequestDBContext extends DBContext {
         try {
             const query = `
                 SELECT lr.*, 
-                       u.FullName as RequestorName, u.Username,
+                       u.FullName as RequestorName, u.Username, u.DepartmentID,
+                       d.DepartmentName,
                        ls.StatusName,
                        approver.FullName as ApproverName
                 FROM LeaveRequest lr
                 LEFT JOIN [User] u ON lr.UserID = u.UserID
+                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
                 LEFT JOIN LeaveStatus ls ON lr.StatusID = ls.StatusID
                 LEFT JOIN [User] approver ON lr.ApprovedBy = approver.UserID
                 ORDER BY lr.CreatedAt DESC
             `;
             
             const result = await this.executeQuery(query);
-            return result.recordset.map(row => LeaveRequest.fromDatabase(row));
+            return result.recordset.map(row => {
+                const leaveRequest = LeaveRequest.fromDatabase(row);
+                // Add additional user and department info to the leave request object
+                leaveRequest.User = {
+                    FullName: row.RequestorName,
+                    Username: row.Username,
+                    DepartmentID: row.DepartmentID,
+                    Department: {
+                        DepartmentName: row.DepartmentName
+                    }
+                };
+                return leaveRequest;
+            });
         } catch (error) {
             console.error('Error fetching leave requests:', error);
             throw error;
@@ -33,11 +47,13 @@ class LeaveRequestDBContext extends DBContext {
         try {
             const query = `
                 SELECT lr.*, 
-                       u.FullName as RequestorName, u.Username,
+                       u.FullName as RequestorName, u.Username, u.DepartmentID,
+                       d.DepartmentName,
                        ls.StatusName,
                        approver.FullName as ApproverName
                 FROM LeaveRequest lr
                 LEFT JOIN [User] u ON lr.UserID = u.UserID
+                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
                 LEFT JOIN LeaveStatus ls ON lr.StatusID = ls.StatusID
                 LEFT JOIN [User] approver ON lr.ApprovedBy = approver.UserID
                 WHERE lr.RequestID = @id
@@ -48,10 +64,21 @@ class LeaveRequestDBContext extends DBContext {
             if (result.recordset.length === 0) {
                 return null;
             }
-            
-            return LeaveRequest.fromDatabase(result.recordset[0]);
+
+            const row = result.recordset[0];
+            const leaveRequest = LeaveRequest.fromDatabase(row);
+            // Add additional user and department info to the leave request object
+            leaveRequest.User = {
+                FullName: row.RequestorName,
+                Username: row.Username,
+                DepartmentID: row.DepartmentID,
+                Department: {
+                    DepartmentName: row.DepartmentName
+                }
+            };
+            return leaveRequest;
         } catch (error) {
-            console.error('Error fetching leave request:', error);
+            console.error('Error fetching leave request by ID:', error);
             throw error;
         }
     }
@@ -134,11 +161,13 @@ class LeaveRequestDBContext extends DBContext {
         try {
             const query = `
                 SELECT lr.*, 
-                       u.FullName as RequestorName, u.Username,
+                       u.FullName as RequestorName, u.Username, u.DepartmentID,
+                       d.DepartmentName,
                        ls.StatusName,
                        approver.FullName as ApproverName
                 FROM LeaveRequest lr
                 LEFT JOIN [User] u ON lr.UserID = u.UserID
+                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
                 LEFT JOIN LeaveStatus ls ON lr.StatusID = ls.StatusID
                 LEFT JOIN [User] approver ON lr.ApprovedBy = approver.UserID
                 WHERE lr.UserID = @userId
@@ -146,9 +175,59 @@ class LeaveRequestDBContext extends DBContext {
             `;
             
             const result = await this.executeQuery(query, { userId: userId });
-            return result.recordset.map(row => LeaveRequest.fromDatabase(row));
+            return result.recordset.map(row => {
+                const leaveRequest = LeaveRequest.fromDatabase(row);
+                // Add additional user and department info to the leave request object
+                leaveRequest.User = {
+                    FullName: row.RequestorName,
+                    Username: row.Username,
+                    DepartmentID: row.DepartmentID,
+                    Department: {
+                        DepartmentName: row.DepartmentName
+                    }
+                };
+                return leaveRequest;
+            });
         } catch (error) {
             console.error('Error fetching leave requests by user:', error);
+            throw error;
+        }
+    }
+
+    // Method to get leave requests by department ID for department leaders
+    async getByDepartmentId(departmentId) {
+        try {
+            const query = `
+                SELECT lr.*, 
+                       u.FullName as RequestorName, u.Username, u.DepartmentID,
+                       d.DepartmentName,
+                       ls.StatusName,
+                       approver.FullName as ApproverName
+                FROM LeaveRequest lr
+                LEFT JOIN [User] u ON lr.UserID = u.UserID
+                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
+                LEFT JOIN LeaveStatus ls ON lr.StatusID = ls.StatusID
+                LEFT JOIN [User] approver ON lr.ApprovedBy = approver.UserID
+                WHERE u.DepartmentID = @departmentId
+                ORDER BY lr.CreatedAt DESC
+            `;
+            
+            const result = await this.executeQuery(query, { departmentId: departmentId });
+            return result.recordset.map(row => {
+                const leaveRequest = LeaveRequest.fromDatabase(row);
+                // Add additional department info to the leave request object
+                leaveRequest.User = {
+                    FullName: row.RequestorName,
+                    Username: row.Username,
+                    DepartmentID: row.DepartmentID,
+                    Department: {
+                        DepartmentName: row.DepartmentName
+                    }
+                };
+                return leaveRequest;
+            });
+        } catch (error) {
+            console.error('Error fetching leave requests by department:', error);
             throw error;
         }
     }
@@ -157,11 +236,13 @@ class LeaveRequestDBContext extends DBContext {
         try {
             const query = `
                 SELECT lr.*, 
-                       u.FullName as RequestorName, u.Username,
+                       u.FullName as RequestorName, u.Username, u.DepartmentID,
+                       d.DepartmentName,
                        ls.StatusName,
                        approver.FullName as ApproverName
                 FROM LeaveRequest lr
                 LEFT JOIN [User] u ON lr.UserID = u.UserID
+                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
                 LEFT JOIN LeaveStatus ls ON lr.StatusID = ls.StatusID
                 LEFT JOIN [User] approver ON lr.ApprovedBy = approver.UserID
                 WHERE lr.StatusID = @statusId
@@ -169,7 +250,19 @@ class LeaveRequestDBContext extends DBContext {
             `;
             
             const result = await this.executeQuery(query, { statusId: statusId });
-            return result.recordset.map(row => LeaveRequest.fromDatabase(row));
+            return result.recordset.map(row => {
+                const leaveRequest = LeaveRequest.fromDatabase(row);
+                // Add additional user and department info to the leave request object
+                leaveRequest.User = {
+                    FullName: row.RequestorName,
+                    Username: row.Username,
+                    DepartmentID: row.DepartmentID,
+                    Department: {
+                        DepartmentName: row.DepartmentName
+                    }
+                };
+                return leaveRequest;
+            });
         } catch (error) {
             console.error('Error fetching leave requests by status:', error);
             throw error;

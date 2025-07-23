@@ -52,8 +52,8 @@ const useLeaveRequest = () => {
             return 'Ngày kết thúc phải sau ngày bắt đầu';
         }
 
-        if (leaveRequestData.reason.length < 10) {
-            return 'Lý do nghỉ phép phải có ít nhất 10 ký tự';
+        if (leaveRequestData.reason.length < 1) {
+            return 'Lý do nghỉ phép phải có ít nhất 1 ký tự';
         }
 
         return null;

@@ -1,11 +1,24 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
+import useNavbarPermissions from './hooks/useNavbarPermissions';
+import NavbarMenu from './components/NavbarMenu';
+import UserDebugInfo from './components/UserDebugInfo';
 import './Navbar.css';
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const { user, isAuthenticated, logout, loading } = useUser();
+    const { logout } = useUser();
+    const { 
+        isDirector, 
+        isDepartmentLeader, 
+        isEmployee, 
+        loading, 
+        user,
+        userRoles,
+        roleNames,
+        roleIds
+    } = useNavbarPermissions();
 
     const handleLogout = async () => {
         try {
@@ -17,6 +30,17 @@ const Navbar = () => {
             navigate('/login');
         }
     };
+
+    // Debug logging để kiểm tra phân quyền
+    console.log('Navbar Debug:', {
+        user: user?.Username,
+        roles: user?.roles,
+        roleNames,
+        roleIds,
+        isDirector,
+        isDepartmentLeader, 
+        isEmployee
+    });
 
     if (loading) {
         return (
@@ -37,6 +61,7 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
+            <UserDebugInfo user={user} />
             <div className="navbar-container">
                 <div className="navbar-brand">
                     <Link to="/" className="navbar-logo">
@@ -45,37 +70,15 @@ const Navbar = () => {
                 </div>
 
                 <div className="navbar-menu">
-                    {isAuthenticated && user ? (
-                        <>
-                            <Link to="/dashboard" className="navbar-item">
-                                Dashboard
-                            </Link>
-                            <Link to="/leave-requests" className="navbar-item">
-                                Leave Requests
-                            </Link>
-                            <Link to="/leave-request-create" className="navbar-item">
-                                Tạo Đơn Nghỉ Phép
-                            </Link>
-                            <Link to="/users" className="navbar-item">
-                                Users
-                            </Link>
-                            <Link to="/my-leave-request" className="navbar-item">
-                                Đơn Nghỉ Của Tôi
-                            </Link>
-                            <div className="navbar-user">
-                                <span className="user-name">
-                                    Welcome, {user.FullName || user.Username || 'User'}
-                                </span>
-                                <button onClick={handleLogout} className="logout-btn">
-                                    Logout
-                                </button>
-                            </div>
-                        </>
-                    ) : (
-                        <Link to="/login" className="navbar-item login-link">
-                            Login
-                        </Link>
-                    )}
+                    <NavbarMenu
+                        isAuthenticated={!!user}
+                        isDirector={isDirector}
+                        isDepartmentLeader={isDepartmentLeader}
+                        isEmployee={isEmployee}
+                        user={user}
+                        roleIds={roleIds}
+                        onLogout={handleLogout}
+                    />
                 </div>
             </div>
         </nav>

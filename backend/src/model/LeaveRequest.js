@@ -82,7 +82,7 @@ class LeaveRequest {
 
     // Convert to JSON for API response
     toJSON() {
-        return {
+        const result = {
             RequestID: this.RequestID,
             UserID: this.UserID,
             FromDate: this.FromDate,
@@ -94,6 +94,13 @@ class LeaveRequest {
             UpdatedAt: this.UpdatedAt,
             LeaveDays: this.getLeaveDays()
         };
+
+        // Include User information if available
+        if (this.User) {
+            result.User = this.User;
+        }
+
+        return result;
     }
 }
 

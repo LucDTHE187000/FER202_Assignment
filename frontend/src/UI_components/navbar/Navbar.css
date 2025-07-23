@@ -93,6 +93,24 @@
     background: #c0392b;
 }
 
+/* Thêm styles cho các nút mới trong navbar */
+.navbar-item.admin-link {
+    background-color: #e74c3c;
+    color: white !important;
+    margin-right: 5px;
+}
+
+.navbar-item.admin-link:hover {
+    background-color: #c0392b;
+}
+
+/* Hiệu ứng active khi đang ở page đó */
+.navbar-item.active {
+    background-color: #3498db;
+    color: white;
+}
+
+
 /* Responsive design */
 @media (max-width: 900px) {
     .navbar-container {
