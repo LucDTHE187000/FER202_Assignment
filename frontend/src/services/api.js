@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Cấu hình base URL cho API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 // Tạo axios instance với cấu hình mặc định
 const apiClient = axios.create({
@@ -175,8 +175,11 @@ class ApiService {
 
     async getLeaveRequestsByUserId(userId) {
         try {
-            return await apiClient.get(`/leave/${userId}`);
+            const endpoint = `/leave/user/${userId}`;
+            console.log('Calling endpoint:', endpoint);
+            return await apiClient.get(endpoint);
         } catch (error) {
+            console.error('Error in getLeaveRequestsByUserId:', error);
             throw error;
         }
     }
