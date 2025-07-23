@@ -173,6 +173,14 @@ class ApiService {
         }
     }
 
+    async getLeaveRequestsByUserId(userId) {
+        try {
+            return await apiClient.get(`/leave/${userId}`);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getLeaveRequestById(id) {
         try {
             return await apiClient.get(`/leave-requests/${id}`);
@@ -207,7 +215,7 @@ class ApiService {
 
     async getLeaveRequestsByUser(userId) {
         try {
-            return await apiClient.get(`/leave-requests/user/${userId}`);
+            return await apiClient.get(`/leave-requests?userId=${userId}`);
         } catch (error) {
             throw error;
         }

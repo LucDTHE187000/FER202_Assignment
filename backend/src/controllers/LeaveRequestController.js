@@ -407,6 +407,57 @@ class LeaveRequestController {
         return this.getAllLeaveRequests(req, res);
     }
 
+    // Method để lấy leave requests của user hiện tại đang đăng nhập
+    async getMyLeaveRequests(req, res) {
+        try {
+            // Kiểm tra xem user có được authenticate không
+            if (!req.user || !req.user.UserID) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'Unauthorized - User not authenticated'
+                });
+            }
+
+            const userId = req.user.UserID;
+            const leaveRequests = await this.leaveRequestDB.getByUserId(userId);
+            const leaveRequestJsons = leaveRequests.map(lr => lr.toJSON());
+            
+            res.json({
+                success: true,
+                data: leaveRequestJsons,
+                count: leaveRequestJsons.length
+            });
+        } catch (error) {
+            console.error('Error in getMyLeaveRequests:', error);
+            res.status(500).json({
+                success: false,
+                error: 'Failed to fetch user leave requests',
+                message: error.message
+            });
+        }
+    }
+
+    // Method mới để get leave requests của một user cụ thể
+    async getLeaveRequestsByUserId(userId, req, res) {
+        try {
+            const leaveRequests = await this.leaveRequestDB.getByUserId(userId);
+            const leaveRequestJsons = leaveRequests.map(lr => lr.toJSON());
+            
+            res.json({
+                success: true,
+                data: leaveRequestJsons,
+                count: leaveRequestJsons.length
+            });
+        } catch (error) {
+            console.error('Error in getLeaveRequestsByUserId:', error);
+            res.status(500).json({
+                success: false,
+                error: 'Failed to fetch user leave requests',
+                message: error.message
+            });
+        }
+    }
+
     async create(req, res) {
         return this.createLeaveRequest(req, res);
     }

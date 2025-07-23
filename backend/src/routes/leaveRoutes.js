@@ -12,5 +12,5 @@ router.put('/:id', authenticateToken, (req, res) => leaveRequestController.updat
 router.delete('/:id', authenticateToken, (req, res) => leaveRequestController.remove(req, res));
 router.post('/:id/approve', authenticateToken, (req, res) => leaveRequestController.approve(req, res));
 router.get('/timeline', authenticateToken, (req, res) => leaveRequestController.getTimeline(req, res)); // Chỉ director
-
+router.get('/:userId', authenticateToken, (req, res) => leaveRequestController.getLeaveRequestsByUser(req, res));
 module.exports = router;
