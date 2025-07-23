@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext';
@@ -8,6 +7,7 @@ import Footer from './UI_components/footer/Footer';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
 import Dashboard from './pages/dashboard/Dashboard';
+import LeaveRequest from './pages/create_leave_request/LeaveRquest';
 import './App.css';
 
 function App() {
@@ -24,6 +24,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/leave-request-create" element={<LeaveRequest />} />
                 <Route path="/" element={<Navigate to="/login" replace />} />
               </Routes>
             </main>

@@ -53,6 +53,9 @@ const Navbar = () => {
                             <Link to="/leave-requests" className="navbar-item">
                                 Leave Requests
                             </Link>
+                            <Link to="/leave-request-create" className="navbar-item">
+                                Tạo Đơn Nghỉ Phép
+                            </Link>
                             <Link to="/users" className="navbar-item">
                                 Users
                             </Link>
