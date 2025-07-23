@@ -352,6 +352,76 @@ class LeaveRequestController {
             });
         }
     }
+
+    // Alias methods để tương thích với leaveRoutes.js
+    async getAll(req, res) {
+        return this.getAllLeaveRequests(req, res);
+    }
+
+    async create(req, res) {
+        return this.createLeaveRequest(req, res);
+    }
+
+    async update(req, res) {
+        return this.updateLeaveRequest(req, res);
+    }
+
+    async remove(req, res) {
+        return this.deleteLeaveRequest(req, res);
+    }
+
+    async approve(req, res) {
+        // Lấy approvedBy từ req.user (middleware đã gán user vào request)
+        const approvedBy = req.user ? req.user.UserID : null;
+        
+        if (!approvedBy) {
+            return res.status(401).json({
+                success: false,
+                error: 'User not authenticated'
+            });
+        }
+
+        // Gán approvedBy vào body để sử dụng method hiện có
+        req.body.approvedBy = approvedBy;
+        return this.approveLeaveRequest(req, res);
+    }
+
+    async getTimeline(req, res) {
+        try {
+            // Kiểm tra quyền director
+            const userRoles = req.user.roles || [];
+            const isDirector = userRoles.some(role => role.RoleID === 1 || role.RoleName === 'Director');
+
+            if (!isDirector) {
+                return res.status(403).json({
+                    success: false,
+                    error: 'Only directors can access timeline'
+                });
+            }
+
+            const { fromDate, toDate } = req.query;
+            let leaveRequests;
+
+            if (fromDate && toDate) {
+                leaveRequests = await this.leaveRequestDB.getByDateRange(new Date(fromDate), new Date(toDate));
+            } else {
+                leaveRequests = await this.leaveRequestDB.list();
+            }
+
+            res.json({
+                success: true,
+                data: leaveRequests.map(lr => lr.toJSON()),
+                count: leaveRequests.length
+            });
+        } catch (error) {
+            console.error('Error in getTimeline:', error);
+            res.status(500).json({
+                success: false,
+                error: 'Failed to fetch timeline',
+                message: error.message
+            });
+        }
+    }
 }
 
 module.exports = LeaveRequestController;

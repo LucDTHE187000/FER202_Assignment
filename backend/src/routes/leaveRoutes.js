@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middlewares/authMiddleware');
-const leaveController = require('../controllers/leaveController');
+const LeaveRequestController = require('../controllers/LeaveRequestController');
 
-router.get('/', authenticateToken, leaveController.getAll);
-router.post('/', authenticateToken, leaveController.create);
-router.put('/:id', authenticateToken, leaveController.update);
-router.delete('/:id', authenticateToken, leaveController.remove);
-router.post('/:id/approve', authenticateToken, leaveController.approve);
-router.get('/timeline', authenticateToken, leaveController.getTimeline); // Chỉ director
+// Initialize controller
+const leaveRequestController = new LeaveRequestController();
+
+router.get('/', authenticateToken, (req, res) => leaveRequestController.getAll(req, res));
+router.post('/', authenticateToken, (req, res) => leaveRequestController.create(req, res));
+router.put('/:id', authenticateToken, (req, res) => leaveRequestController.update(req, res));
+router.delete('/:id', authenticateToken, (req, res) => leaveRequestController.remove(req, res));
+router.post('/:id/approve', authenticateToken, (req, res) => leaveRequestController.approve(req, res));
+router.get('/timeline', authenticateToken, (req, res) => leaveRequestController.getTimeline(req, res)); // Chỉ director
 
 module.exports = router;
