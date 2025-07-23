@@ -1,0 +1,428 @@
+.my-leave-request {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.my-leave-request-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.my-leave-request-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.my-leave-request-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.my-leave-request-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.requests-table-container {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.requests-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.requests-table th,
+.requests-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.requests-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.requests-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.requests-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    min-width: 80px;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-edit {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+.btn-save {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-save:hover {
+    background-color: #1e7e34;
+    transform: translateY(-1px);
+}
+
+.btn-cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background-color: #545b62;
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-form input,
+.edit-form textarea,
+.edit-form select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus,
+.edit-form select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.edit-form textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.no-requests {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.no-requests h3 {
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.no-requests p {
+    margin-bottom: 20px;
+}
+
+.create-request-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.create-request-link:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: white;
+}
+
+.date-cell {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.reason-cell {
+    max-width: 200px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.created-date {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    min-width: 500px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease;
+}
+
+.modal-title {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+    .modal-content {
+        min-width: auto;
+        margin: 20px;
+        padding: 20px;
+    }
+    
+    .modal-title {
+        font-size: 1.2rem;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .modal-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Modal form specific styles */
+.modal-content .edit-form {
+    margin: 0;
+}
+
+.modal-content .edit-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.modal-content .edit-form input,
+.modal-content .edit-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .requests-table {
+        font-size: 0.9rem;
+    }
+    
+    .requests-table th,
+    .requests-table td {
+        padding: 12px 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .my-leave-request-container {
+        padding: 10px;
+    }
+    
+    .my-leave-request-header h1 {
+        font-size: 2rem;
+    }
+    
+    .requests-table-container {
+        padding: 15px;
+        overflow-x: auto;
+    }
+    
+    .requests-table {
+        min-width: 700px;
+        font-size: 0.8rem;
+    }
+    
+    .requests-table th,
+    .requests-table td {
+        padding: 10px 6px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .my-leave-request-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .requests-table-container {
+        padding: 10px;
+    }
+    
+    .status-badge {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+        min-width: 60px;
+    }
+}

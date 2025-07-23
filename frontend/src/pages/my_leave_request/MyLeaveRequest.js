@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import './MyLeaveRequest.css';
 
 const DUMMY_REQUESTS = [
   {
@@ -93,165 +95,182 @@ const MyLeaveRequest = () => {
     }
   };
 
-  return (
-    <div className="leave-request-container">
-      <h2>Đơn Nghỉ Phép Của Tôi</h2>
-      {loading ? (
-        <p>Đang tải...</p>
-      ) : requests.length === 0 ? (
-        <p>Bạn chưa có đơn nghỉ phép nào.</p>
-      ) : (
-        <table className="leave-request-table">
-          <thead>
-            <tr>
-              <th>Từ ngày</th>
-              <th>Đến ngày</th>
-              <th>Lý do</th>
-              <th>Trạng thái</th>
-              <th>Ngày tạo</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.map((req) => (
-              <tr key={req.RequestID}>
-                <td>{req.FromDate}</td>
-                <td>{req.ToDate}</td>
-                <td>{req.Reason}</td>
-                <td>
-                  {statusOptions.find((s) => s.value === req.StatusID)?.label ||
-                    "Không xác định"}
-                </td>
-                <td>{req.CreatedAt}</td>
-                <td>
-                  <button
-                    style={{
-                      backgroundColor: "#04ef6aff",
-                      color: "white",
-                      marginRight: 6,
-                    }}
-                    onClick={() => handleUpdate(req.RequestID)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    style={{ backgroundColor: "#e74c3c", color: "white" }}
-                    onClick={() => handleDelete(req.RequestID)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+  const getStatusBadge = (statusId) => {
+    const status = statusOptions.find(s => s.value === statusId);
+    let className = 'status-badge ';
+    
+    switch(statusId) {
+      case 1:
+        className += 'status-pending';
+        break;
+      case 2:
+        className += 'status-approved';
+        break;
+      case 3:
+        className += 'status-rejected';
+        break;
+      default:
+        className += 'status-pending';
+    }
+    
+    return <span className={className}>{status?.label || 'Không xác định'}</span>;
+  };
 
-      {/* Modal update */}
-      {editing && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0,0,0,0.3)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-        >
-          <form
-            className="leave-request-form"
-            style={{
-              background: "#fff",
-              padding: 32,
-              borderRadius: 12,
-              minWidth: 320,
-              boxShadow: "0 2px 16px rgba(0,0,0,0.15)",
-              position: "relative",
-            }}
-            onSubmit={handleEditSubmit}
-          >
-            <h3
-              style={{
-                color: "#2d5be3",
-                marginBottom: 18,
-              }}
-            >
-              Cập nhật đơn nghỉ phép
-            </h3>
-            <div className="form-group">
-              <label>Từ ngày</label>
-              <input
-                type="date"
-                name="FromDate"
-                value={editForm.FromDate}
-                onChange={handleEditChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Đến ngày</label>
-              <input
-                type="date"
-                name="ToDate"
-                value={editForm.ToDate}
-                onChange={handleEditChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Lý do</label>
-              <textarea
-                name="Reason"
-                value={editForm.Reason}
-                onChange={handleEditChange}
-                required
-                rows={3}
-              />
-            </div>
-            
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: 10,
-              }}
-            >
-              <button
-                type="button"
-                style={{
-                  background: "#f11010ff",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 4,
-                  padding: "8px 18px",
-                  cursor: "pointer",
-                }}
-                onClick={handleEditCancel}
-              >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                style={{
-                  background: "#2d5be3",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 4,
-                  padding: "8px 18px",
-                  cursor: "pointer",
-                }}
-              >
-                Lưu
-              </button>
-            </div>
-          </form>
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
+  };
+
+  return (
+    <div className="my-leave-request">
+      <div className="my-leave-request-container">
+        <div className="my-leave-request-header">
+          <h1>Đơn Nghỉ Phép Của Tôi</h1>
+          <p>Quản lý và theo dõi các đơn nghỉ phép của bạn</p>
         </div>
-      )}
+
+        <div className="requests-table-container">
+          {loading ? (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+            </div>
+          ) : requests.length === 0 ? (
+            <div className="no-requests">
+              <h3>Chưa có đơn nghỉ phép nào</h3>
+              <p>Bạn chưa tạo đơn nghỉ phép nào. Hãy tạo đơn mới để bắt đầu.</p>
+              <Link to="/leave-request-create" className="create-request-link">
+                <span>+</span> Tạo đơn nghỉ phép mới
+              </Link>
+            </div>
+          ) : (
+            <table className="requests-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Từ ngày</th>
+                  <th>Đến ngày</th>
+                  <th>Lý do</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {requests.map((req) => (
+                  <tr key={req.RequestID}>
+                    <td>#{req.RequestID}</td>
+                    <td className="date-cell">{formatDate(req.FromDate)}</td>
+                    <td className="date-cell">{formatDate(req.ToDate)}</td>
+                    <td className="reason-cell">{req.Reason}</td>
+                    <td>{getStatusBadge(req.StatusID)}</td>
+                    <td className="created-date">{formatDate(req.CreatedAt)}</td>
+                    <td>
+                      <div className="action-buttons">
+                        {editing === req.RequestID ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-save"
+                              onClick={handleEditSubmit}
+                            >
+                              💾 Lưu
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-cancel"
+                              onClick={handleEditCancel}
+                            >
+                              ✕ Hủy
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="btn btn-edit"
+                              onClick={() => handleUpdate(req.RequestID)}
+                              disabled={req.StatusID === 2} // Không cho sửa nếu đã duyệt
+                            >
+                              ✏️ Sửa
+                            </button>
+                            <button
+                              className="btn btn-delete"
+                              onClick={() => handleDelete(req.RequestID)}
+                              disabled={req.StatusID === 2} // Không cho xóa nếu đã duyệt
+                            >
+                              🗑️ Xóa
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Edit Form Modal */}
+        {editing && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h3 className="modal-title">
+                Chỉnh sửa đơn nghỉ phép #{editing}
+              </h3>
+              <form className="edit-form" onSubmit={handleEditSubmit}>
+                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px'}}>
+                  <div>
+                    <label>Từ ngày:</label>
+                    <input
+                      type="date"
+                      name="FromDate"
+                      value={editForm.FromDate}
+                      onChange={handleEditChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label>Đến ngày:</label>
+                    <input
+                      type="date"
+                      name="ToDate"
+                      value={editForm.ToDate}
+                      onChange={handleEditChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label>Lý do:</label>
+                  <textarea
+                    name="Reason"
+                    value={editForm.Reason}
+                    onChange={handleEditChange}
+                    required
+                    rows={3}
+                    placeholder="Nhập lý do nghỉ phép..."
+                  />
+                </div>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="btn btn-cancel"
+                    onClick={handleEditCancel}
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-save"
+                  >
+                    Cập nhật đơn
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
