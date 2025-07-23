@@ -8,9 +8,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Import routes
-const authRoutes = require('./routes/authRoutes');
-const leaveRoutes = require('./routes/leaveRoutes');
-const apiRoutes = require('./routes/api');
+const authRoutes = require('./src/routes/authRoutes');
+const leaveRoutes = require('./src/routes/leaveRoutes');
+const apiRoutes = require('./src/routes/api');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/leave', leaveRoutes);

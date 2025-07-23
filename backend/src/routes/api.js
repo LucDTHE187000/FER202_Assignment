@@ -1,10 +1,10 @@
 const express = require('express');
-const UserController = require('../src/controller/UserController');
-const LeaveRequestController = require('../src/controller/LeaveRequestController');
-const AuthController = require('../src/controller/AuthController');
-const DashboardController = require('../src/controller/DashboardController');
-const DepartmentController = require('../src/controller/DepartmentController');
-const UserRoleController = require('../src/controller/UserRoleController');
+const UserController = require('../controllers/UserController');
+const LeaveRequestController = require('../controllers/LeaveRequestController');
+const AuthController = require('../controllers/AuthController');
+const DashboardController = require('../controllers/DashboardController');
+const DepartmentController = require('../controllers/DepartmentController');
+const UserRoleController = require('../controllers/UserRoleController');
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ const userRoleController = new UserRoleController();
 router.get('/health', async (req, res) => {
     try {
         // Test database connection by trying to get a simple query
-        const DBContext = require('../src/dal/DBContext');
+        const DBContext = require('../dal/DBContext');
         const dbContext = new DBContext();
         await dbContext.executeQuery('SELECT 1 as test');
         
