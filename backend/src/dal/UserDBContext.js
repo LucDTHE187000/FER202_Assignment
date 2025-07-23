@@ -45,11 +45,7 @@ class UserDBContext extends DBContext {
             
             // Lấy roles của user
             const roles = await this.getUserRoles(user.UserID);
-            user.roles = roles.map(role => ({
-                RoleID: role.RoleID,
-                RoleName: role.RoleName,
-                Description: role.Description
-            }));
+            user.roles = roles;
             
             return user;
         } catch (error) {
@@ -165,11 +161,7 @@ class UserDBContext extends DBContext {
             
             // Lấy roles của user
             const roles = await this.getUserRoles(user.UserID);
-            user.roles = roles.map(role => ({
-                RoleID: role.RoleID,
-                RoleName: role.RoleName,
-                Description: role.Description
-            }));
+            user.roles = roles;
             
             return user;
         } catch (error) {
@@ -206,9 +198,75 @@ class UserDBContext extends DBContext {
             `;
             
             const result = await this.executeQuery(query, { userId: userId });
-            return result.recordset;
+            // Trả về mảng roles đơn giản, không cần UserRole model
+            return result.recordset.map(row => ({
+                RoleID: row.RoleID,
+                RoleName: row.RoleName,
+                Description: row.Description
+            }));
         } catch (error) {
             console.error('Error fetching user roles:', error);
+            throw error;
+        }
+    }
+
+    // Method để thêm role cho user
+    async addUserRole(userId, roleId) {
+        try {
+            const query = `
+                INSERT INTO UserRole (UserID, RoleID)
+                VALUES (@userId, @roleId)
+            `;
+            
+            await this.executeQuery(query, {
+                userId: userId,
+                roleId: roleId
+            });
+            
+            return true;
+        } catch (error) {
+            console.error('Error adding user role:', error);
+            throw error;
+        }
+    }
+
+    // Method để xóa role của user
+    async removeUserRole(userId, roleId) {
+        try {
+            const query = `
+                DELETE FROM UserRole 
+                WHERE UserID = @userId AND RoleID = @roleId
+            `;
+            
+            await this.executeQuery(query, {
+                userId: userId,
+                roleId: roleId
+            });
+            
+            return true;
+        } catch (error) {
+            console.error('Error removing user role:', error);
+            throw error;
+        }
+    }
+
+    // Method để gán role mặc định cho user mới
+    async assignDefaultRole(userId, roleId) {
+        try {
+            const query = `
+                INSERT INTO UserRole (UserID, RoleID)
+                VALUES (@userId, @roleId)
+            `;
+            
+            await this.executeQuery(query, {
+                userId: userId,
+                roleId: roleId
+            });
+            
+            console.log(`Successfully assigned role ${roleId} to user ${userId}`);
+            return true;
+        } catch (error) {
+            console.error('Error assigning default role:', error);
             throw error;
         }
     }

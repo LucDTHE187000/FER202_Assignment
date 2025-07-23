@@ -153,15 +153,12 @@ class AuthController {
             const savedUser = await this.userDB.insert(user);
             
             // Gán role mặc định "employee" (RoleID = 4) cho user mới
-            // Tạm thời comment để test
-            /*
             try {
                 await this.assignDefaultRole(savedUser.UserID, 4); // 4 = employee role
             } catch (roleError) {
                 console.error('Warning: Could not assign default role to new user:', roleError);
                 // Không throw error vì user đã được tạo thành công
             }
-            */
             
             // Trả về thông tin user (không bao gồm password)
             const userResponse = savedUser.toJSON();
@@ -363,16 +360,7 @@ class AuthController {
     // Helper method để gán role mặc định cho user mới
     async assignDefaultRole(userId, roleId) {
         try {
-            const pool = this.userDB.getPool();
-            const request = pool.request();
-            
-            const query = `
-                INSERT INTO UserRole (UserID, RoleID)
-                VALUES (${userId}, ${roleId})
-            `;
-            
-            await request.query(query);
-            console.log(`Successfully assigned role ${roleId} to user ${userId}`);
+            await this.userDB.assignDefaultRole(userId, roleId);
         } catch (error) {
             console.error('Error assigning default role:', error);
             throw error;

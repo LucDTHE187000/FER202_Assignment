@@ -4,7 +4,6 @@ const LeaveRequestController = require('../controllers/LeaveRequestController');
 const AuthController = require('../controllers/AuthController');
 const DashboardController = require('../controllers/DashboardController');
 const DepartmentController = require('../controllers/DepartmentController');
-const UserRoleController = require('../controllers/UserRoleController');
 
 const router = express.Router();
 
@@ -14,7 +13,6 @@ const leaveRequestController = new LeaveRequestController();
 const authController = new AuthController();
 const dashboardController = new DashboardController();
 const departmentController = new DepartmentController();
-const userRoleController = new UserRoleController();
 
 // Health check endpoint
 router.get('/health', async (req, res) => {
@@ -79,11 +77,5 @@ router.get('/dashboard/stats', (req, res) => dashboardController.getStats(req, r
 router.get('/dashboard/activities', (req, res) => dashboardController.getRecentActivities(req, res));
 router.get('/dashboard/user-stats/:userId', (req, res) => dashboardController.getUserStats(req, res));
 router.get('/dashboard/monthly-stats', (req, res) => dashboardController.getMonthlyStats(req, res));
-
-// User Role routes
-router.get('/user-roles', (req, res) => userRoleController.getAllUserRoles(req, res));
-router.get('/user-roles/:id', (req, res) => userRoleController.getUserRoleById(req, res));
-router.post('/user-roles', (req, res) => userRoleController.createUserRole(req, res));
-router.delete('/user-roles/:id', (req, res) => userRoleController.deleteUserRole(req, res));
 
 module.exports = router;
