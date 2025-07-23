@@ -1,5 +1,5 @@
 const UserDBContext = require('../dal/UserDBContext');
-const User = require('../model/User');
+const User = require('../model/User');//test update
 const bcrypt = require('bcrypt'); // Sẽ cần cài đặt: npm install bcrypt
 const jwt = require('jsonwebtoken'); // Sẽ cần cài đặt: npm install jsonwebtoken
 const sql = require('mssql');
