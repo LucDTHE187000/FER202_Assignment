@@ -6,7 +6,7 @@ import Navbar from './UI_components/navbar/Navbar';
 import Footer from './UI_components/footer/Footer';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
-import Dashboard from './pages/dashboard/Dashboard';
+import About from './pages/about/About';
 import LeaveRequest from './pages/create_leave_request/CreateLeaveRequest';
 import MyLeaveRequest from './pages/my_leave_request/MyLeaveRequest';
 import ManageLeaveRequest from './pages/manage_leave_request/ManageLeaveRequest';
@@ -27,13 +27,13 @@ function App() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/leave-request-create" element={<LeaveRequest />} />
                 <Route path="/my-leave-request" element={<MyLeaveRequest />} />
                 <Route path="/leave-manage" element={<ManageLeaveRequest />} />
                 <Route path="/user-role-management" element={<UserRoleManagement />} />
                 <Route path="/leave-report" element={<LeaveRequestReport />} />
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<Navigate to="/about" replace />} />
               </Routes>
             </main>
             <Footer />

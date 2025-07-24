@@ -31,8 +31,8 @@ const NavbarMenu = ({
 
     return (
         <>
-            <Link to="/dashboard" className="navbar-item">
-                Dashboard
+            <Link to="/about" className="navbar-item">
+                Trang chủ
             </Link>
 
             {/* Các nút dành riêng cho Director */}
