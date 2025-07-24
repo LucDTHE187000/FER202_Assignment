@@ -28,8 +28,8 @@ const LeaveRequestForm = ({
                             Bạn sẽ nhận được thông báo khi đơn được xử lý.
                         </p>
                         <div>
-                            <Link to="/dashboard" className="dashboard-redirect-btn">
-                                Về Dashboard
+                            <Link to="/my-leave-request" className="dashboard-redirect-btn">
+                                Xem đơn nghỉ phép của tôi
                             </Link>
                             <button 
                                 onClick={onReset} 
@@ -116,8 +116,8 @@ const LeaveRequestForm = ({
 
                 <div className="leave-request-footer">
                     <p>Cần trợ giúp?</p>
-                    <Link to="/dashboard" className="dashboard-link">
-                        Quay về Dashboard
+                    <Link to="/my-leave-request" className="dashboard-link">
+                        Xem đơn nghỉ phép của tôi
                     </Link>
                 </div>
             </div>

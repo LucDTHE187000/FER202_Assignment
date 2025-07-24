@@ -20,7 +20,7 @@ const EditModal = ({
         <div className="modal-overlay">
             <div className="modal-content">
                 <h3 className="modal-title">
-                    Chỉnh sửa đơn nghỉ phép #{editing}
+                    Chỉnh Sửa Đơn Nghỉ Phép #{editing}
                 </h3>
                 
                 {error && (
