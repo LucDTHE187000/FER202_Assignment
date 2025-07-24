@@ -10,6 +10,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import LeaveRequest from './pages/create_leave_request/CreateLeaveRequest';
 import MyLeaveRequest from './pages/my_leave_request/MyLeaveRequest';
 import ManageLeaveRequest from './pages/manage_leave_request/ManageLeaveRequest';
+import UserRoleManagement from './pages/user_role_management/UserRoleManagement';
 import './App.css';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/leave-request-create" element={<LeaveRequest />} />
                 <Route path="/my-leave-request" element={<MyLeaveRequest />} />
                 <Route path="/leave-manage" element={<ManageLeaveRequest />} />
+                <Route path="/user-role-management" element={<UserRoleManagement />} />
                 <Route path="/" element={<Navigate to="/login" replace />} />
               </Routes>
             </main>

@@ -5,6 +5,7 @@ class User {
         this.PasswordHash = data.PasswordHash || '';
         this.FullName = data.FullName || '';
         this.DepartmentID = data.DepartmentID || null;
+        this.DepartmentName = data.DepartmentName || null; // Thêm DepartmentName từ JOIN
         this.CreatedAt = data.CreatedAt || new Date();
         this.UpdatedAt = data.UpdatedAt || new Date();
         this.IsActive = data.IsActive !== undefined ? data.IsActive : true;
@@ -62,6 +63,7 @@ class User {
             Username: this.Username,
             FullName: this.FullName,
             DepartmentID: this.DepartmentID,
+            DepartmentName: this.DepartmentName, // Thêm DepartmentName vào response
             CreatedAt: this.CreatedAt,
             UpdatedAt: this.UpdatedAt,
             IsActive: this.IsActive,

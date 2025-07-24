@@ -4,6 +4,7 @@ const LeaveRequestController = require('../controllers/LeaveRequestController');
 const AuthController = require('../controllers/AuthController');
 const DashboardController = require('../controllers/DashboardController');
 const DepartmentController = require('../controllers/DepartmentController');
+const UserRoleController = require('../controllers/UserRoleController');
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ const leaveRequestController = new LeaveRequestController();
 const authController = new AuthController();
 const dashboardController = new DashboardController();
 const departmentController = new DepartmentController();
+const userRoleController = new UserRoleController();
 
 // Health check endpoint
 router.get('/health', async (req, res) => {
@@ -71,6 +73,12 @@ router.get('/departments/:id', (req, res) => departmentController.getDepartmentB
 router.post('/departments', (req, res) => departmentController.createDepartment(req, res));
 router.put('/departments/:id', (req, res) => departmentController.updateDepartment(req, res));
 router.delete('/departments/:id', (req, res) => departmentController.deleteDepartment(req, res));
+
+// User Role Management routes
+router.get('/user-roles', (req, res) => userRoleController.getAllUsersWithRoles(req, res));
+router.get('/user-roles/roles', (req, res) => userRoleController.getAllRoles(req, res));
+router.post('/user-roles/assign', (req, res) => userRoleController.assignRole(req, res));
+router.delete('/user-roles/remove', (req, res) => userRoleController.removeRole(req, res));
 
 // Dashboard routes
 router.get('/dashboard/stats', (req, res) => dashboardController.getStats(req, res));

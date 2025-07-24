@@ -268,6 +268,43 @@ class ApiService {
         return await this.getAllDepartments();
     }
 
+    // User Role Management APIs
+    async getUsersWithRoles() {
+        try {
+            return await apiClient.get('/user-roles');
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getAvailableRoles() {
+        try {
+            return await apiClient.get('/user-roles/roles');
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async assignUserRole(userId, roleId) {
+        try {
+            return await apiClient.post('/user-roles/assign', { userId, roleId });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async removeUserRole(userId, roleId) {
+        try {
+            return await apiClient.request({
+                method: 'DELETE',
+                url: '/user-roles/remove',
+                data: { userId, roleId }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
     // Registration API
     async register(userData) {
         try {

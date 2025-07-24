@@ -38,7 +38,8 @@ const NavbarMenu = ({
             {/* Các nút dành riêng cho Director */}
             {isDirector && (
                 <>
-                    <Link to="/user-manage" className="navbar-item">
+
+                    <Link to="/user-role-management" className="navbar-item">
                         Quản lí người dùng
                     </Link>
                     <Link to="/leave-manage" className="navbar-item">

@@ -19,7 +19,16 @@ class UserDBContext extends DBContext {
             `;
             
             const result = await this.executeQuery(query);
-            return result.recordset.map(row => User.fromDatabase(row));
+            
+            // Lấy roles cho từng user
+            const users = await Promise.all(result.recordset.map(async (row) => {
+                const user = User.fromDatabase(row);
+                const roles = await this.getUserRoles(user.UserID);
+                user.roles = roles;
+                return user;
+            }));
+            
+            return users;
         } catch (error) {
             console.error('Error fetching users:', error);
             throw error;
@@ -181,7 +190,16 @@ class UserDBContext extends DBContext {
             `;
             
             const result = await this.executeQuery(query, { departmentId: departmentId });
-            return result.recordset.map(row => User.fromDatabase(row));
+            
+            // Lấy roles cho từng user
+            const users = await Promise.all(result.recordset.map(async (row) => {
+                const user = User.fromDatabase(row);
+                const roles = await this.getUserRoles(user.UserID);
+                user.roles = roles;
+                return user;
+            }));
+            
+            return users;
         } catch (error) {
             console.error('Error fetching users by department:', error);
             throw error;
