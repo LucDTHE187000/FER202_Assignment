@@ -5,6 +5,7 @@ const AuthController = require('../controllers/AuthController');
 const DashboardController = require('../controllers/DashboardController');
 const DepartmentController = require('../controllers/DepartmentController');
 const UserRoleController = require('../controllers/UserRoleController');
+const LeaveReportController = require('../controllers/LeaveReportController');
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ const authController = new AuthController();
 const dashboardController = new DashboardController();
 const departmentController = new DepartmentController();
 const userRoleController = new UserRoleController();
+const leaveReportController = new LeaveReportController();
 
 // Health check endpoint
 router.get('/health', async (req, res) => {
@@ -79,6 +81,11 @@ router.get('/user-roles', (req, res) => userRoleController.getAllUsersWithRoles(
 router.get('/user-roles/roles', (req, res) => userRoleController.getAllRoles(req, res));
 router.post('/user-roles/assign', (req, res) => userRoleController.assignRole(req, res));
 router.delete('/user-roles/remove', (req, res) => userRoleController.removeRole(req, res));
+
+// Leave Report routes
+router.get('/leave-reports/stats', (req, res) => leaveReportController.getLeaveStats(req, res));
+router.get('/leave-reports/detailed', (req, res) => leaveReportController.getDetailedReport(req, res));
+router.get('/leave-reports/employee-summary', (req, res) => leaveReportController.getEmployeeSummary(req, res));
 
 // Dashboard routes
 router.get('/dashboard/stats', (req, res) => dashboardController.getStats(req, res));

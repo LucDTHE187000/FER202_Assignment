@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import './MyLeaveRequest.css';
 
 const statusOptions = [
-  { value: 1, label: "Chờ duyệt" },
-  { value: 2, label: "Đã duyệt" },
-  { value: 3, label: "Từ chối" },
+  { value: 1, label: "Đã duyệt" },
+  { value: 2, label: "Từ chối" },
+  { value: 3, label: "Chờ duyệt" },
 ];
 
 const MyLeaveRequest = () => {
@@ -72,13 +72,13 @@ const MyLeaveRequest = () => {
     
     switch(statusId) {
       case 1:
-        className += 'status-pending';
-        break;
-      case 2:
         className += 'status-approved';
         break;
-      case 3:
+      case 2:
         className += 'status-rejected';
+        break;
+      case 3:
+        className += 'status-pending';
         break;
       default:
         className += 'status-pending';

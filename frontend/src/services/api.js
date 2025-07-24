@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Cấu hình base URL cho API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 // Tạo axios instance với cấu hình mặc định
 const apiClient = axios.create({
@@ -300,6 +300,42 @@ class ApiService {
                 url: '/user-roles/remove',
                 data: { userId, roleId }
             });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Leave Report APIs
+    async getLeaveStats() {
+        try {
+            return await apiClient.get('/leave-reports/stats');
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getDetailedReport(filters = {}) {
+        try {
+            const params = new URLSearchParams();
+            Object.keys(filters).forEach(key => {
+                if (filters[key] && filters[key] !== 'all') {
+                    params.append(key, filters[key]);
+                }
+            });
+            
+            const queryString = params.toString();
+            const url = queryString ? `/leave-reports/detailed?${queryString}` : '/leave-reports/detailed';
+            
+            return await apiClient.get(url);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getEmployeeSummary(year) {
+        try {
+            const url = year ? `/leave-reports/employee-summary?year=${year}` : '/leave-reports/employee-summary';
+            return await apiClient.get(url);
         } catch (error) {
             throw error;
         }

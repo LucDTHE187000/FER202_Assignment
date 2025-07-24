@@ -384,6 +384,182 @@ class LeaveRequestDBContext extends DBContext {
             throw error;
         }
     }
+
+    // === REPORT METHODS ===
+    
+    // Lấy thống kê tổng quan về leave requests
+    async getLeaveStats() {
+        try {
+            console.log('Getting leave statistics from DB...');
+            
+            // Query để lấy thống kê tổng quan
+            const statsQuery = `
+                SELECT 
+                    COUNT(*) as totalRequests,
+                    COUNT(CASE WHEN lr.StatusID = 1 THEN 1 END) as approvedRequests,
+                    COUNT(CASE WHEN lr.StatusID = 2 THEN 1 END) as rejectedRequests,
+                    COUNT(CASE WHEN lr.StatusID = 3 THEN 1 END) as pendingRequests,
+                    COUNT(CASE WHEN YEAR(lr.FromDate) = YEAR(GETDATE()) THEN 1 END) as thisYearRequests,
+                    COUNT(CASE WHEN YEAR(lr.FromDate) = YEAR(GETDATE()) AND MONTH(lr.FromDate) = MONTH(GETDATE()) THEN 1 END) as thisMonthRequests
+                FROM LeaveRequest lr
+                LEFT JOIN [User] u ON lr.UserID = u.UserID
+                WHERE u.IsActive = 1
+            `;
+
+            const statsResult = await this.executeQuery(statsQuery);
+            const stats = statsResult.recordset[0];
+
+            // Query để lấy thống kê theo phòng ban
+            const departmentStatsQuery = `
+                SELECT 
+                    d.DepartmentName,
+                    d.DepartmentID,
+                    COUNT(lr.RequestID) as totalRequests,
+                    COUNT(CASE WHEN lr.StatusID = 1 THEN 1 END) as approvedRequests,
+                    COUNT(CASE WHEN lr.StatusID = 2 THEN 1 END) as rejectedRequests,
+                    COUNT(CASE WHEN lr.StatusID = 3 THEN 1 END) as pendingRequests,
+                    COUNT(DISTINCT u.UserID) as totalEmployees
+                FROM Department d
+                LEFT JOIN [User] u ON d.DepartmentID = u.DepartmentID AND u.IsActive = 1
+                LEFT JOIN LeaveRequest lr ON u.UserID = lr.UserID
+                GROUP BY d.DepartmentID, d.DepartmentName
+                ORDER BY d.DepartmentName
+            `;
+
+            const departmentStatsResult = await this.executeQuery(departmentStatsQuery);
+            const departmentStats = departmentStatsResult.recordset;
+
+            // Query để lấy thống kê theo tháng (12 tháng gần nhất)
+            const monthlyStatsQuery = `
+                SELECT 
+                    YEAR(lr.FromDate) as year,
+                    MONTH(lr.FromDate) as month,
+                    DATENAME(MONTH, lr.FromDate) + ' ' + CAST(YEAR(lr.FromDate) AS VARCHAR) as monthYear,
+                    COUNT(*) as totalRequests,
+                    COUNT(CASE WHEN lr.StatusID = 1 THEN 1 END) as approvedRequests
+                FROM LeaveRequest lr
+                LEFT JOIN [User] u ON lr.UserID = u.UserID
+                WHERE u.IsActive = 1 
+                    AND lr.FromDate >= DATEADD(MONTH, -12, GETDATE())
+                GROUP BY YEAR(lr.FromDate), MONTH(lr.FromDate), DATENAME(MONTH, lr.FromDate)
+                ORDER BY YEAR(lr.FromDate), MONTH(lr.FromDate)
+            `;
+
+            const monthlyStatsResult = await this.executeQuery(monthlyStatsQuery);
+            const monthlyStats = monthlyStatsResult.recordset;
+
+            return {
+                overview: stats,
+                departmentStats,
+                monthlyStats
+            };
+        } catch (error) {
+            console.error('Error getting leave stats from DB:', error);
+            throw error;
+        }
+    }
+
+    // Lấy báo cáo chi tiết với bộ lọc
+    async getDetailedReport(filters = {}) {
+        try {
+            console.log('Getting detailed leave report from DB...');
+            
+            const { departmentId, fromDate, toDate, status } = filters;
+
+            let whereConditions = ['u.IsActive = 1'];
+            let queryParams = {};
+
+            // Thêm điều kiện lọc theo phòng ban
+            if (departmentId && departmentId !== 'all') {
+                whereConditions.push('u.DepartmentID = @departmentId');
+                queryParams.departmentId = parseInt(departmentId);
+            }
+
+            // Thêm điều kiện lọc theo ngày
+            if (fromDate) {
+                whereConditions.push('lr.FromDate >= @fromDate');
+                queryParams.fromDate = fromDate;
+            }
+
+            if (toDate) {
+                whereConditions.push('lr.ToDate <= @toDate');
+                queryParams.toDate = toDate;
+            }
+
+            // Thêm điều kiện lọc theo trạng thái
+            if (status && status !== 'all') {
+                whereConditions.push('lr.StatusID = @status');
+                queryParams.status = parseInt(status);
+            }
+
+            const query = `
+                SELECT 
+                    lr.RequestID,
+                    lr.FromDate,
+                    lr.ToDate,
+                    lr.Reason,
+                    lr.CreatedAt,
+                    lr.StatusID,
+                    ls.StatusName,
+                    u.UserID,
+                    u.FullName as EmployeeName,
+                    u.Username,
+                    d.DepartmentID,
+                    d.DepartmentName,
+                    approver.FullName as ApproverName,
+                    DATEDIFF(DAY, lr.FromDate, lr.ToDate) + 1 as TotalDays
+                FROM LeaveRequest lr
+                LEFT JOIN [User] u ON lr.UserID = u.UserID
+                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
+                LEFT JOIN LeaveStatus ls ON lr.StatusID = ls.StatusID
+                LEFT JOIN [User] approver ON lr.ApprovedBy = approver.UserID
+                WHERE ${whereConditions.join(' AND ')}
+                ORDER BY lr.CreatedAt DESC
+            `;
+
+            const result = await this.executeQuery(query, queryParams);
+            return result.recordset;
+        } catch (error) {
+            console.error('Error getting detailed report from DB:', error);
+            throw error;
+        }
+    }
+
+    // Lấy tổng hợp theo nhân viên
+    async getEmployeeSummary(year = null) {
+        try {
+            console.log('Getting employee leave summary from DB...');
+            
+            const currentYear = year || new Date().getFullYear();
+
+            const query = `
+                SELECT 
+                    u.UserID,
+                    u.FullName as EmployeeName,
+                    u.Username,
+                    d.DepartmentName,
+                    COUNT(lr.RequestID) as TotalRequests,
+                    COUNT(CASE WHEN lr.StatusID = 1 THEN 1 END) as ApprovedRequests,
+                    COUNT(CASE WHEN lr.StatusID = 2 THEN 1 END) as RejectedRequests,
+                    COUNT(CASE WHEN lr.StatusID = 3 THEN 1 END) as PendingRequests,
+                    COALESCE(SUM(CASE WHEN lr.StatusID = 1 THEN DATEDIFF(DAY, lr.FromDate, lr.ToDate) + 1 ELSE 0 END), 0) as TotalApprovedDays,
+                    COALESCE(MAX(lr.CreatedAt), NULL) as LastRequestDate
+                FROM [User] u
+                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
+                LEFT JOIN LeaveRequest lr ON u.UserID = lr.UserID 
+                    AND YEAR(lr.FromDate) = @year
+                WHERE u.IsActive = 1
+                GROUP BY u.UserID, u.FullName, u.Username, d.DepartmentName
+                ORDER BY d.DepartmentName, u.FullName
+            `;
+
+            const result = await this.executeQuery(query, { year: currentYear });
+            return result.recordset;
+        } catch (error) {
+            console.error('Error getting employee summary from DB:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = LeaveRequestDBContext;
